@@ -45,6 +45,10 @@ class Help(commands.Cog):
         nav.start()
         await ctx.send(nav)
 
+    @commands.command()
+    async def invite(self, ctx):
+        await ctx.send("https://discord.com/api/oauth2/authorize?client_id=794855595126947851&permissions=268438528&scope=bot")
+
 
 def setup(bot):
     bot.add_cog(Help(bot))
