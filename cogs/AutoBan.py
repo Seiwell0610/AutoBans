@@ -85,7 +85,18 @@ class AutoBan(commands.Cog):
     async def apply(self, ctx):
         role = discord.utils.get(ctx.guild.roles, name="メンバー")
         if role is None:
-            permissions = discord.Permissions(send_messages=False, read_messages=True, read_message_history=True)
+            permissions = discord.Permissions(create_instant_invite=True,
+                                              add_reactions=True,
+                                              read_messages=True,
+                                              view_channel=True,
+                                              send_messages=True,
+                                              attach_files=True,
+                                              read_message_history=True,
+                                              external_emojis=True,
+                                              connect=True,
+                                              speak=True,
+                                              change_nickname=True,
+                                              )
             await ctx.guild.create_role(name="メンバー", permissions=permissions)
             role = discord.utils.get(ctx.guild.roles, name="メンバー")
 
