@@ -21,8 +21,8 @@ def db_upload(filename):
         dbx.files_upload(fc.read(), f"/{filename}", mode=dropbox.files.WriteMode.overwrite)
 
 def db_download(filename):
-    with open(f"{x}", "wb") as f:
-        metadata, res = dbx.files_download(path=f"/{x}")
+    with open(f"{filename}", "wb") as f:
+        metadata, res = dbx.files_download(path=f"/{filename}")
         f.write(res.content)
 
 
