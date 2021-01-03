@@ -20,6 +20,11 @@ def db_upload(filename):
     with open(f"{filename}", "rb") as fc:
         dbx.files_upload(fc.read(), f"/{filename}", mode=dropbox.files.WriteMode.overwrite)
 
+def db_download(filename):
+    with open(f"{x}", "wb") as f:
+        metadata, res = dbx.files_download(path=f"/{x}")
+        f.write(res.content)
+
 
 class AutoBan(commands.Cog):
     def __init__(self, bot):
@@ -27,12 +32,14 @@ class AutoBan(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        db_download(filename="Main_Data.db")
         cu.execute(f"CREATE TABLE IF NOT EXISTS '{guild.id}' (user_id INTEGER)")  # 追加
         cn.commit()  # 反映
         db_upload(filename="Main_Data.db")
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
+        db_download(filename="Main_Data.db")
         cu.execute(f"DROP TABLE '{guild.id}'")  # 削除
         cn.commit()  # 反映
         db_upload(filename="Main_Data.db")
@@ -45,6 +52,7 @@ class AutoBan(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def entry(self, ctx, entry_user: commands.UserConverter):
+        db_download(filename="Main_Data.db")
         on_entry_user = cu.execute(f"SELECT user_id FROM '{ctx.guild.id}' WHERE user_id = ?", (entry_user.id, )).fetchone()
         if on_entry_user is None:
             cu.execute(f"INSERT INTO '{ctx.guild.id}' VALUES (?)",(entry_user.id, ))
@@ -64,6 +72,7 @@ class AutoBan(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def release(self, ctx, entry_user: commands.UserConverter):
+        db_download(filename="Main_Data.db")
         on_entry_user = cu.execute(f"SELECT user_id FROM '{ctx.guild.id}' WHERE user_id = ?", (entry_user.id,)).fetchone()
         if on_entry_user is None:
             return await ctx.send(f"{ctx.author.mention}-> 登録されていないユーザーのため削除できませんでした。")
@@ -83,6 +92,7 @@ class AutoBan(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def apply(self, ctx):
+        db_download(filename="Main_Data.db")
         role = discord.utils.get(ctx.guild.roles, name="メンバー")
         if role is None:
             permissions = discord.Permissions(create_instant_invite=True,
