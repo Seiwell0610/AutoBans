@@ -2,7 +2,7 @@ import os
 
 from discord.ext import commands
 
-
+print(f"{os.path.basename(__file__)}の読み込み完了")
 
 class System(commands.Cog):
     def __init__(self, bot):
