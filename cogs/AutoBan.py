@@ -50,10 +50,14 @@ class AutoBan(commands.Cog):
             cu.execute(f"INSERT INTO '{ctx.guild.id}' VALUES (?)",(entry_user.id, ))
             cn.commit()
             db_upload(filename="Main_Data.db")
+            role = discord.utils.get(ctx.guild.roles, name="メンバー")
+            user = ctx.guild.get_member(entry_user.id)
+            await user.remove_roles(role)
             em = discord.Embed(title="登録", colour=discord.Colour.green())
             em.add_field(name="登録されたユーザー", value=f"{entry_user}({entry_user.id})")
             await ctx.send(f"{ctx.author.mention}")
             await ctx.send(embed=em)
+
         else:
             await ctx.send(f"{ctx.author.mention}-> 既に登録されているユーザーです。")
 
@@ -64,9 +68,9 @@ class AutoBan(commands.Cog):
         if on_entry_user is None:
             return await ctx.send(f"{ctx.author.mention}-> 登録されていないユーザーのため削除できませんでした。")
 
-        role = discord.utils.get(ctx.guild.roles, name="Gban")
+        role = discord.utils.get(ctx.guild.roles, name="メンバー")
         user = ctx.guild.get_member(entry_user.id)
-        await user.remove_roles(role)
+        await user.add_roles(role)
         cu.execute(f"DELETE FROM '{ctx.guild.id}' WHERE user_id = ?", (entry_user.id, ))
         cn.commit()
         db_upload(filename="Main_Data.db")
